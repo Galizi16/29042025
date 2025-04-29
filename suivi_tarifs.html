@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparaison de Tarifs - Hôtel Folkestone Opera</title>
+    <!-- Tailwind via CDN (pour simplifier, sinon utiliser votre build) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lier le fichier CSS spécifique -->
+    <link rel="stylesheet" href="suivi_tarifs.css">
+    <script>
+        // Configuration Tailwind (Copier la configuration de votre index.html pour cohérence)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'charcoal-dark': '#1a202c',
+                        'darker-charcoal': '#2d3748',
+                        'medium-charcoal': '#4a5568',
+                        'light-charcoal': '#718096',
+                        'vibrant-orange': '#F97316',
+                        'light-orange': '#FB923C',
+                        'pale-orange': '#FFEDD5',
+                        'accent-blue': '#3B82F6',
+                        'accent-green': '#22C55E',
+                        'accent-red': '#EF4444',
+                        'accent-yellow': '#FACC15',
+                    },
+                    boxShadow: {
+                        'folkestone-orange': '0 4px 15px -1px rgba(249, 115, 22, 0.2), 0 2px 8px -1px rgba(249, 115, 22, 0.1)',
+                        'card-hover': '0 10px 20px rgba(0, 0, 0, 0.2)',
+                        'inner-light': 'inset 0 1px 3px rgba(255, 255, 255, 0.1)',
+                    },
+                    animation: {
+                       'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-charcoal-dark text-gray-100 min-h-screen font-sans p-4 md:p-6">
+
+    <!-- Header -->
+    <header class="bg-darker-charcoal rounded-xl p-4 mb-6 shadow-lg flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold text-light-orange">Comparaison des Tarifs</h1>
+            <p class="text-gray-400 text-sm">Visualisez et comparez les tarifs entre plusieurs plans sur une période.</p>
+        </div>
+         <div class="flex items-center">
+            <button id="refreshBtn" class="bg-medium-charcoal hover:bg-light-charcoal text-gray-100 px-4 py-2 rounded-lg flex items-center text-sm">
+                <i class="fas fa-sync-alt mr-2"></i>
+                <span>Actualiser</span>
+            </button>
+             <!-- Bouton Retour vers la page principale si nécessaire -->
+              <a href="index.html" class="bg-medium-charcoal hover:bg-light-charcoal text-gray-100 px-4 py-2 rounded-lg flex items-center ml-2 text-sm">
+                  <i class="fas fa-arrow-left mr-2"></i>
+                  <span>Accueil</span>
+              </a>
+         </div>
+    </header>
+
+    <!-- Zone pour les messages globaux -->
+    <div id="suivi-global-message-area" class="mb-6"></div>
+
+
+    <!-- Formulaire de Paramètres -->
+    <div id="suivi-form-container" class="glass-card rounded-xl p-6 mb-8 shadow-lg">
+        <h2 class="text-xl font-semibold mb-6 text-light-orange highlight-orange">
+            <i class="fas fa-sliders-h mr-2 text-gray-400"></i>Paramètres de Comparaison
+        </h2>
+
+        <form id="suiviForm" novalidate>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-6">
+                <div>
+                    <label for="suivi-dateDebut" class="label-style">Date de Début</label>
+                    <input type="date" class="input-style" id="suivi-dateDebut" required>
+                </div>
+                <div>
+                    <label for="suivi-dateFin" class="label-style">Date de Fin</label>
+                    <input type="date" class="input-style" id="suivi-dateFin" required>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-6">
+                <div>
+                    <label for="suivi-room-category" class="label-style">Catégorie de Chambre</label>
+                    <select class="input-style" id="suivi-room-category" required disabled>
+                         <option value="">Chargement...</option>
+                    </select>
+                </div>
+                 <div>
+                    <label for="suivi-chartType" class="label-style">Type de Graphique</label>
+                    <select class="input-style" id="suivi-chartType">
+                        <option value="line">Ligne</option>
+                        <option value="bar">Barres</option>
+                        <option value="area">Aire</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h4 class="text-lg font-medium text-light-orange border-b border-gray-700 pb-2">Plans à Comparer</h4>
+                <div id="partnerComparisonsContainer" class="space-y-4">
+                     <!-- Les blocs partenaire/plan seront ajoutés ici par JS -->
+                </div>
+                <button type="button" id="suivi-addPartnerBtn" class="btn-action btn-action-outline">
+                    <i class="fas fa-plus mr-2"></i>
+                    <span>Ajouter un Plan de Comparaison</span>
+                </button>
+            </div>
+
+            <div class="flex justify-end mt-8">
+                <button type="submit" id="suivi-generateBtn" class="btn-action btn-gradient-blue">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    <span>Générer la Comparaison</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Section Résultats -->
+    <div id="suivi-result-container" class="hidden glass-card rounded-xl p-6 mb-8 shadow-lg fade-in">
+        <h2 class="text-xl font-semibold mb-6 text-light-orange highlight-orange">
+             <i class="fas fa-chart-bar mr-2 text-gray-400"></i>Résultats de la Comparaison
+        </h2>
+
+        <div class="mb-8">
+            <h3 class="text-lg font-medium mb-4 text-light-orange">Graphique des Tarifs Journaliers</h3>
+            <div class="chart-container">
+                <canvas id="tarifsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-lg font-medium mb-4 text-light-orange">Analyse des Différences</h3>
+            <div id="suivi-differenceAnalysis" class="space-y-6">
+                <!-- L'analyse détaillée sera injectée ici -->
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-lg font-medium mb-4 text-light-orange">Tableau Comparatif Journalier</h3>
+            <div id="suivi-comparisonTable" class="overflow-x-auto">
+                 <!-- Le tableau sera injecté ici -->
+            </div>
+             <div class="mt-4 text-sm text-gray-400">
+                <i class="fas fa-info-circle mr-1"></i>
+                Les couleurs dans le tableau indiquent les tarifs les plus bas (<span class="text-accent-green">vert</span>) et les plus élevés (<span class="text-accent-red">rouge</span>) pour chaque jour.
+            </div>
+        </div>
+
+         <!-- Alert container moved here -->
+         <div id="suivi-alertContainer" class="mt-6"></div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-xs text-gray-500">
+        <p>&copy; 2024 Hôtel Folkestone Opera - Outil Interne</p>
+    </footer>
+
+    <!-- Lier le fichier JavaScript principal (main module) -->
+    <script src="suivi_tarifs.js" type="module"></script>
+</body>
+</html>

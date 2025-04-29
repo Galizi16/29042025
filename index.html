@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- MODIFIE LE TITRE SI TU VEUX -->
+    <title>Gestion Tarifs Hôtel</title>
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Lier le fichier CSS -->
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Configuration Tailwind (GARDÉE TELLE QUELLE)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'charcoal-dark': '#1a202c',
+                        'darker-charcoal': '#2d3748',
+                        'medium-charcoal': '#4a5568',
+                        'light-charcoal': '#718096',
+                        'vibrant-orange': '#F97316',
+                        'light-orange': '#FB923C',
+                        'pale-orange': '#FFEDD5',
+                        'accent-blue': '#3B82F6',
+                        'accent-green': '#22C55E',
+                        'accent-red': '#EF4444',
+                        'accent-yellow': '#FACC15',
+                    },
+                    boxShadow: {
+                        'folkestone-orange': '0 4px 15px -1px rgba(249, 115, 22, 0.2), 0 2px 8px -1px rgba(249, 115, 22, 0.1)',
+                        'card-hover': '0 10px 20px rgba(0, 0, 0, 0.2)',
+                        'inner-light': 'inset 0 1px 3px rgba(255, 255, 255, 0.1)',
+                    },
+                    animation: {
+                       'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: 0, transform: 'translateY(10px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Styles spécifiques (déplacés vers style.css pour la propreté, sauf config Tailwind) -->
+</head>
+<body class="bg-charcoal-dark text-gray-100 min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="mb-8 flex justify-between items-center">
+             <div>
+                 <h1 class="text-3xl font-bold bg-gradient-to-r from-vibrant-orange to-light-orange bg-clip-text text-transparent">
+                     Gestion Tarifs Hôtel
+                 </h1>
+                 <!-- Sous-titre optionnel -->
+                 <p class="text-sm text-gray-400">Calcul & Vérification</p>
+             </div>
+        </header>
+
+        <!-- Zone pour les messages globaux -->
+        <div id="global-message-area" class="mb-6"></div>
+
+        <!-- Section Choix Initial -->
+        <div id="choice-section" class="mb-8 fade-in">
+            <h2 class="text-xl font-semibold mb-6 text-center text-light-orange">Que souhaitez-vous faire ?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Carte Calculer -->
+                <div class="choice-card glass-card rounded-xl p-6 text-center hover:bg-darker-charcoal/80" data-target="calculate-section">
+                    <div class="mb-4 text-4xl text-vibrant-orange"><i class="fas fa-calculator"></i></div>
+                    <h3 class="text-lg font-semibold mb-2 text-gray-100">Calculer un Tarif</h3>
+                    <p class="text-sm text-gray-400">Estimer le coût d'un séjour.</p>
+                </div>
+                <!-- Carte Vérifier -->
+                <div class="choice-card glass-card rounded-xl p-6 text-center hover:bg-darker-charcoal/80" data-target="verify-section">
+                    <div class="mb-4 text-4xl text-accent-green"><i class="fas fa-check-double"></i></div>
+                    <h3 class="text-lg font-semibold mb-2 text-gray-100">Vérifier une Résa</h3>
+                    <p class="text-sm text-gray-400">Comparer un total reçu.</p>
+                </div>
+                 <!-- New Card linking to the standalone page -->
+                 <a href="suivi_tarifs.html" class="choice-card glass-card rounded-xl p-6 text-center hover:bg-darker-charcoal/80 block">
+                      <div class="mb-4 text-4xl text-accent-blue"><i class="fas fa-chart-line"></i></div>
+                      <h3 class="text-lg font-semibold mb-2 text-gray-100">Suivi des Tarifs</h3>
+                      <p class="text-sm text-gray-400">Comparer plusieurs plans sur une période.</p>
+                 </a>
+            </div>
+        </div>
+
+        <!-- Section Calculer -->
+        <div id="calculate-section" class="hidden fade-in">
+            <div class="glass-card rounded-xl p-6 mb-8 shadow-lg">
+                <h2 class="text-xl font-semibold mb-6 text-light-orange highlight-orange">Calculer un Tarif</h2>
+                <form id="calculate-form" novalidate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <label for="calculate-arrival-date" class="label-style">Date d'arrivée</label>
+                            <input type="date" class="input-style" id="calculate-arrival-date" required>
+                        </div>
+                        <div>
+                            <label for="calculate-nights" class="label-style">Nuits</label>
+                            <input type="number" class="input-style" id="calculate-nights" min="1" max="90" required value="1">
+                        </div>
+                        <div>
+                            <label for="calculate-partner" class="label-style">Partenaire</label>
+                            <select class="input-style" id="calculate-partner">
+                                <option value="">Chargement...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="calculate-rate-plan" class="label-style">Plan tarifaire</label>
+                            <select class="input-style" id="calculate-rate-plan" required disabled>
+                                <option value="">Sélectionnez Partenaire...</option> <!-- Updated placeholder -->
+                            </select>
+                            <div id="calculate-rate-plan-help" class="form-text-style rate-info"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="calculate-room-category" class="label-style">Catégorie de chambre</label>
+                            <select class="input-style" id="calculate-room-category" required disabled>
+                                <option value="">Sélectionnez Plan...</option> <!-- Updated placeholder -->
+                            </select>
+                        </div>
+                        <div>
+                            <label for="calculate-discount" class="label-style">Remise (%)</label>
+                            <input type="number" class="input-style" id="calculate-discount" min="0" max="100" step="0.01" value="0">
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
+                        <button type="button" class="btn-action btn-action-outline btn-back w-full md:w-auto">
+                            <i class="fas fa-arrow-left mr-2"></i>Retour au Choix
+                        </button>
+                        <button type="submit" class="btn-action btn-gradient-orange w-full md:w-auto">
+                            <i class="fas fa-calculator mr-2"></i>Calculer le Tarif
+                        </button>
+                    </div>
+                 </form>
+            </div>
+            <div id="calculate-result" class="result-section hidden"></div>
+        </div>
+
+        <!-- Section Vérifier -->
+        <div id="verify-section" class="hidden fade-in">
+             <div class="glass-card rounded-xl p-6 mb-8 shadow-lg">
+                 <h2 class="text-xl font-semibold mb-6 text-light-orange highlight-orange">Vérifier une Réservation</h2>
+                 <form id="verify-form" novalidate>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
+                         <div>
+                             <label for="verify-arrival-date" class="label-style">Date d'arrivée</label>
+                             <input type="date" class="input-style" id="verify-arrival-date" required>
+                         </div>
+                         <div>
+                             <label for="verify-nights" class="label-style">Nuits</label>
+                             <input type="number" class="input-style" id="verify-nights" min="1" max="90" required value="1">
+                         </div>
+                         <div>
+                             <label for="verify-partner" class="label-style">Partenaire</label>
+                             <select class="input-style" id="verify-partner">
+                                 <option value="">Chargement...</option>
+                             </select>
+                         </div>
+                         <div>
+                             <label for="verify-rate-plan" class="label-style">Plan tarifaire</label>
+                             <select class="input-style" id="verify-rate-plan" required disabled>
+                                 <option value="">Sélectionnez Partenaire...</option> <!-- Updated placeholder -->
+                             </select>
+                             <div id="verify-rate-plan-help" class="form-text-style rate-info"></div>
+                         </div>
+                          <div>
+                            <label for="verify-room-category" class="label-style">Catégorie de chambre</label>
+                            <select class="input-style" id="verify-room-category" required disabled>
+                                <option value="">Sélectionnez Plan...</option> <!-- Updated placeholder -->
+                            </select>
+                        </div>
+                         <div>
+                             <label for="verify-discount" class="label-style">Remise (%)</label>
+                             <input type="number" class="input-style" id="verify-discount" min="0" max="100" step="0.01" value="0">
+                         </div>
+                         <div class="lg:col-start-1">
+                             <label for="received-total" class="label-style">Total reçu (€)</label>
+                             <input type="number" class="input-style" id="received-total" min="0" step="0.01" required>
+                         </div>
+                    </div>
+                     <div class="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
+                        <button type="button" class="btn-action btn-action-outline btn-back w-full md:w-auto">
+                            <i class="fas fa-arrow-left mr-2"></i>Retour au Choix
+                        </button>
+                        <button type="submit" class="btn-action btn-green-vibrant w-full md:w-auto">
+                            <i class="fas fa-check-double mr-2"></i>Vérifier la Concordance
+                        </button>
+                    </div>
+                 </form>
+            </div>
+            <div id="verify-result" class="result-section hidden"></div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-xs text-gray-500">
+             <!-- Modifie le Copyright si besoin -->
+            <p>&copy; 2024 Hôtel Folkestone Opera - Outil Interne</p>
+        </footer>
+    </div>
+
+    <!-- Lier le fichier JavaScript principal (main module) -->
+    <script src="script.js" type="module"></script>
+</body>
+</html>

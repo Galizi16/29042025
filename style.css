@@ -1,0 +1,295 @@
+/* Styles globaux */
+body {
+    /* Variables CSS pour faciliter la maintenance des couleurs si besoin */
+    --color-bg-dark: #1a202c;
+    --color-bg-medium: #2d3748;
+    --color-bg-light: #4a5568;
+    --color-text-light: #f7fafc;
+    --color-text-medium: #d1d5db;
+    --color-text-dim: #a0aec0;
+    --color-text-muted: #718096;
+    --color-orange-vibrant: #F97316;
+    --color-orange-light: #FB923C;
+    --color-border-light: rgba(255, 255, 255, 0.1);
+    --color-border-medium: #4a5568;
+    --color-border-focus: #F97316;
+    --color-shadow-focus: rgba(249, 115, 22, 0.5);
+    --color-green-vibrant: #22C55E;
+    --color-green-hover: #16A34A;
+    --color-blue-vibrant: #3B82F6;
+    --color-blue-hover: #2563EB;
+    --color-red-alert: #EF4444;
+    --color-yellow-alert: #FACC15;
+
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-medium); /* Couleur texte par défaut un peu moins vive */
+}
+
+/* Styles pour les animations et effets visuels */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.scale-in { animation: scaleIn 0.2s ease-out forwards; }
+
+/* Style "Glassmorphism" pour les cartes et sections */
+.glass-card {
+    background: rgba(45, 55, 72, 0.75); /* darker-charcoal avec un peu plus d'opacité */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(74, 85, 104, 0.4); /* medium-charcoal un peu transparent */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-radius: 0.75rem; /* rounded-xl */
+}
+
+/* Effet de surlignage pour titres (plus subtil) */
+.highlight-orange {
+    border-left: 3px solid var(--color-orange-vibrant);
+    padding-left: 0.75rem;
+    /* Peut être utilisé en combinaison avec une classe de couleur texte */
+}
+
+/* Style commun pour les en-têtes de tableau */
+.th-style {
+    padding: 0.75rem 1rem; /* p-3 px-4 */
+    text-align: left;
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 600; /* font-semibold */
+    color: var(--color-text-dim); /* text-gray-400 */
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* tracking-wider */
+    background-color: var(--color-bg-medium); /* darker-charcoal */
+    border-bottom: 1px solid var(--color-border-medium);
+}
+/* Amélioration lisibilité tableau */
+.table {
+    border-collapse: collapse; /* Assure que les bordures sont simples */
+    width: 100%;
+}
+.table tbody tr:hover {
+    background-color: rgba(74, 85, 104, 0.15); /* medium-charcoal faible opacité */
+}
+.table td {
+    padding: 0.65rem 1rem; /* py-2.5 px-4 */
+    font-size: 0.875rem; /* text-sm */
+    border-bottom: 1px solid rgba(74, 85, 104, 0.3); /* medium-charcoal très transparent */
+    vertical-align: middle;
+}
+.table thead th:first-child { border-top-left-radius: 0.375rem; } /* rounded-tl-md */
+.table thead th:last-child { border-top-right-radius: 0.375rem; } /* rounded-tr-md */
+.table tfoot td { font-weight: 600; background-color: rgba(45, 55, 72, 0.8); border-color: #4a5568; }
+.table .text-end { text-align: right; }
+.table .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+/* Styles communs formulaires */
+.label-style {
+    display: block;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    margin-bottom: 0.35rem; /* mb-1.5 */
+    color: var(--color-text-dim); /* text-gray-400 */
+}
+.input-style {
+    display: block;
+    width: 100%;
+    background-color: var(--color-bg-medium); /* darker-charcoal */
+    border: 1px solid var(--color-border-medium); /* medium-charcoal */
+    border-radius: 0.375rem; /* rounded-md */
+    padding: 0.6rem 0.75rem; /* Ajusté pour hauteur standard */
+    color: var(--color-text-light); /* gray-100 */
+    outline: none;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); /* Légère ombre interne */
+    font-size: 0.875rem; /* text-sm */
+}
+.input-style:disabled {
+    background-color: rgba(74, 85, 104, 0.5); /* medium-charcoal transparent */
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.input-style:focus {
+    border-color: var(--color-border-focus); /* vibrant-orange */
+    box-shadow: 0 0 0 2px var(--color-shadow-focus), inset 0 1px 2px rgba(0,0,0,0.2); /* Focus ring */
+}
+/* Style spécifique pour les select */
+select.input-style {
+     appearance: none;
+     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Flèche grise */
+     background-position: right 0.5rem center;
+     background-repeat: no-repeat;
+     background-size: 1.5em 1.5em;
+     padding-right: 2.5rem; /* Espace pour la flèche */
+}
+select.input-style:disabled {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%234a5568' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); /* Flèche grisée */
+}
+/* Style pour le texte d'aide sous les selects/inputs */
+.form-text-style {
+    font-size: 0.75rem; /* text-xs */
+    color: var(--color-text-muted); /* gray-500 */
+    margin-top: 0.3rem; /* mt-1.5 */
+    min-height: 1.1em; /* Évite les sauts de layout */
+}
+.rate-info { /* Spécifique pour description plan tarifaire */
+    font-style: italic;
+    color: var(--color-text-dim); /* text-gray-400 */
+}
+
+/* Styles communs boutons */
+.btn-action {
+    padding: 0.6rem 1.25rem; /* py-2.5 px-5 */
+    border-radius: 0.375rem; /* rounded-md */
+    font-weight: 600; /* font-semibold */
+    font-size: 0.875rem; /* text-sm */
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06); /* Ombre subtile */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid transparent;
+    gap: 0.5rem; /* Espace entre icône et texte */
+    line-height: 1.25rem; /* Assure hauteur cohérente */
+}
+.btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+/* Bouton Outline */
+.btn-action-outline {
+    background-color: transparent;
+    border: 1px solid var(--color-border-medium); /* medium-charcoal */
+    color: var(--color-text-dim); /* text-gray-400 */
+}
+.btn-action-outline:hover:not(:disabled) {
+    background-color: rgba(74, 85, 104, 0.2); /* medium-charcoal transparent */
+    color: var(--color-text-medium); /* text-gray-300 */
+    border-color: rgba(113, 128, 150, 0.7); /* light-charcoal un peu transparent */
+}
+/* Couleurs vives pour boutons principaux */
+.btn-gradient-orange {
+    background-image: linear-gradient(to right, var(--color-orange-vibrant), var(--color-orange-light));
+    color: white;
+    border-color: transparent;
+}
+.btn-gradient-orange:hover:not(:disabled) {
+    filter: brightness(1.1);
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.2), 0 1px 3px rgba(0,0,0,0.1);
+}
+.btn-green-vibrant {
+    background-color: var(--color-green-vibrant);
+    color: white;
+}
+.btn-green-vibrant:hover:not(:disabled) {
+    background-color: var(--color-green-hover);
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.2), 0 1px 3px rgba(0,0,0,0.1);
+}
+.btn-blue-vibrant {
+    background-color: var(--color-blue-vibrant);
+    color: white;
+}
+.btn-blue-vibrant:hover:not(:disabled) {
+    background-color: var(--color-blue-hover);
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2), 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Styles pour les cartes de choix */
+.choice-card {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    cursor: pointer;
+}
+.choice-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), 0 0 15px rgba(249, 115, 22, 0.1);
+}
+
+/* Styles pour les sections de résultats */
+.result-section {
+     background-color: rgba(45, 55, 72, 0.8); /* darker-charcoal plus opaque */
+     border: 1px solid rgba(74, 85, 104, 0.6); /* medium-charcoal */
+     padding: 1.5rem; /* p-6 */
+     border-radius: 0.75rem; /* rounded-xl */
+     margin-top: 2rem; /* mt-8 */
+     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.result-section h5 { /* Titres dans les résultats */
+    color: var(--color-orange-light); /* light-orange */
+    margin-bottom: 1rem; /* mb-4 */
+    font-size: 1.125rem; /* text-lg */
+    font-weight: 600; /* font-semibold */
+}
+/* Style spécifique pour les alertes de vérification générées en JS */
+#verify-result .alert { /* Déjà stylé par .alert plus bas */ }
+
+/* Classe pour les messages globaux et alertes */
+.alert {
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 1rem; /* p-4 */
+    margin-bottom: 1rem; /* mb-4 */
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem; /* text-sm */
+    border-left-width: 4px; /* Bordure gauche épaisse */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.alert .close-alert-button {
+    margin-left: auto; /* Positionne à droite */
+    margin-inline-start: auto; /* Pour compatibilité RTL */
+    background-color: transparent;
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.375rem; /* p-1.5 */
+    display: inline-flex;
+    height: 2rem; /* h-8 */
+    width: 2rem; /* w-8 */
+    color: inherit; /* Utilise la couleur de l'alerte */
+    transition: background-color 0.15s ease-in-out;
+}
+.alert .close-alert-button:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Léger fond blanc au survol */
+}
+.alert .close-alert-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.5); /* Anneau focus gris */
+}
+.alert i.fas { /* Icône dans l'alerte */
+    margin-right: 0.75rem; /* mr-3 */
+    font-size: 1.125rem; /* text-lg */
+    flex-shrink: 0; /* Empêche l'icône de rétrécir */
+}
+/* Couleurs spécifiques des alertes */
+.alert-error {
+    border-color: #f87171; /* red-400 */
+    background-color: rgba(239, 68, 68, 0.1); /* red-500/10 */
+    color: #fca5a5; /* red-300 */
+}
+.alert-success {
+    border-color: #4ade80; /* green-400 */
+    background-color: rgba(34, 197, 94, 0.1); /* green-500/10 */
+    color: #86efac; /* green-300 */
+}
+.alert-warning {
+    border-color: #facc15; /* yellow-400 */
+    background-color: rgba(234, 179, 8, 0.1); /* yellow-500/10 */
+    color: #fde047; /* yellow-300 */
+}
+.alert-info {
+    border-color: #60a5fa; /* blue-400 */
+    background-color: rgba(59, 130, 246, 0.1); /* blue-500/10 */
+    color: #93c5fd; /* blue-300 */
+}
+/* Style pour indicateur chargement */
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    color: var(--color-text-dim);
+    font-style: italic;
+}
+.loading-indicator i {
+    margin-left: 0.5rem;
+}
+```
+--- END OF FILE style.css ---
